@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishGuard - Trusted and Blocked Lists</title>
+    <link rel="stylesheet" href="lists.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <img src="images/icon48.png" alt="PhishGuard Logo" class="logo">
+                <h1>PhishGuard Lists</h1>
+            </div>
+            <div class="tabs">
+                <button id="whitelist-tab" class="tab-button active">Trusted Sites</button>
+                <button id="blacklist-tab" class="tab-button">Blocked Sites</button>
+            </div>
+        </header>
+
+        <div id="whitelist-container" class="list-container active">
+            <div class="list-header">
+                <h2>Trusted Sites (Whitelist)</h2>
+                <div class="list-actions">
+                    <button id="add-to-whitelist" class="action-button">Add New</button>
+                    <button id="export-whitelist" class="action-button secondary">Export</button>
+                </div>
+            </div>
+            <div class="list-stats">
+                <span id="whitelist-count">0 sites</span>
+            </div>
+            <div class="list-items" id="whitelist-items">
+                <div class="loader">Loading...</div>
+            </div>
+        </div>
+
+        <div id="blacklist-container" class="list-container">
+            <div class="list-header">
+                <h2>Blocked Sites (Blacklist)</h2>
+                <div class="list-actions">
+                    <button id="add-to-blacklist" class="action-button">Add New</button>
+                    <button id="export-blacklist" class="action-button secondary">Export</button>
+                </div>
+            </div>
+            <div class="list-stats">
+                <span id="blacklist-count">0 sites</span>
+            </div>
+            <div class="list-items" id="blacklist-items">
+                <div class="loader">Loading...</div>
+            </div>
+        </div>
+
+        <div id="add-site-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="modal-title">Add to List</h2>
+                <form id="add-site-form">
+                    <div class="form-group">
+                        <label for="site-url">URL:</label>
+                        <input type="text" id="site-url" placeholder="https://example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="site-notes">Notes (optional):</label>
+                        <textarea id="site-notes" placeholder="Add any notes about this site"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="close-button">Cancel</button>
+                        <button type="submit" class="submit-button">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <footer>
+            <button id="back-button" class="navigation-button">
+                &larr; Back to Analysis
+            </button>
+            <span class="footer-text">PhishGuard - Manage trusted and blocked sites</span>
+        </footer>
+    </div>
+
+    <script src="lists.js"></script>
+</body>
+</html>

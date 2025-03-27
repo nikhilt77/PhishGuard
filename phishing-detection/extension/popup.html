@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PhishGuard</title>
+        <link rel="stylesheet" href="popup.css" />
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <div class="logo-container">
+                    <img
+                        src="images/icon48.png"
+                        alt="PhishGuard Logo"
+                        class="logo"
+                    />
+                    <h1>PhishGuard</h1>
+                </div>
+                <div id="status-indicator" class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span class="status-text">Checking...</span>
+                </div>
+            </header>
+
+            <div class="url-container">
+                <div class="url-label">Current URL:</div>
+                <div id="current-url" class="url-text">Loading...</div>
+            </div>
+
+            <div id="result-container" class="result-container">
+                <div class="result-header">
+                    <div id="result-icon" class="result-icon">⟳</div>
+                    <div id="result-title" class="result-title">
+                        Analyzing URL...
+                    </div>
+                </div>
+                <div id="probability-container" class="probability-container">
+                    <div class="probability-label">Phishing probability:</div>
+                    <div class="probability-bar-container">
+                        <div
+                            id="probability-bar"
+                            class="probability-bar"
+                            style="width: 0%"
+                        ></div>
+                        <span id="probability-value">0%</span>
+                    </div>
+                </div>
+                <div id="source-container" class="source-container">
+                    <span id="source-label"></span>
+                </div>
+            </div>
+
+            <div id="details-container" class="details-container">
+                <h2>Model Details</h2>
+
+                <div class="model-results">
+                    <div class="model-result">
+                        <div class="model-name">Random Forest</div>
+                        <div class="model-verdict" id="rf-verdict">-</div>
+                        <div class="model-probability" id="rf-probability">
+                            -
+                        </div>
+                    </div>
+                    <div class="model-result">
+                        <div class="model-name">SVM</div>
+                        <div class="model-verdict" id="svm-verdict">-</div>
+                        <div class="model-probability" id="svm-probability">
+                            -
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Adaptive Blending</h3>
+                <div class="blending-container">
+                    <div class="blend-weights">
+                        <div class="blend-bar">
+                            <div id="rf-weight-bar" class="rf-weight"></div>
+                            <div id="svm-weight-bar" class="svm-weight"></div>
+                        </div>
+                        <div class="blend-labels">
+                            <span
+                                >RF: <span id="rf-weight-value">60%</span></span
+                            >
+                            <span
+                                >SVM:
+                                <span id="svm-weight-value">40%</span></span
+                            >
+                        </div>
+                    </div>
+                    <div class="blend-method">
+                        <div class="method-label">Blend strategy:</div>
+                        <div id="blend-method-value" class="method-value">
+                            Standard
+                        </div>
+                    </div>
+                    <div class="threshold">
+                        <div class="threshold-label">Decision threshold:</div>
+                        <div id="threshold-value" class="threshold-value">
+                            0.5
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detected-features" id="detected-features">
+                    <h3>Detected URL Features</h3>
+                    <ul id="feature-list">
+                        <li class="feature-item">Loading features...</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button id="refresh-button" class="action-button">
+                    Refresh Analysis
+                </button>
+                <button
+                    id="list-actions-button"
+                    class="action-button secondary"
+                >
+                    Add to List
+                </button>
+                <button id="lists-button" class="action-button secondary">
+                    Manage Lists
+                </button>
+            </div>
+
+            <div id="list-actions-dropdown" class="dropdown">
+                <button id="add-to-whitelist" class="dropdown-item">
+                    Add to Trusted Sites
+                </button>
+                <button id="add-to-blacklist" class="dropdown-item">
+                    Add to Blocked Sites
+                </button>
+            </div>
+
+            <footer>
+                <div class="footer-text">
+                    Powered by AI | <a href="#" id="about-link">About</a>
+                </div>
+            </footer>
+        </div>
+
+        <script src="popup.js"></script>
+    </body>
+</html>
