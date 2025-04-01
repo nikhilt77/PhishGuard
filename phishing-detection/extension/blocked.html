@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishGuard - Dangerous Website Blocked</title>
+    <style>
+        :root {
+            --primary-color: #2196F3;
+            --danger-color: #FF3B30;
+            --success-color: #4CAF50;
+            --warning-color: #FF9500;
+            --neutral-color: #9E9E9E;
+            --background-color: #FFFFFF;
+            --text-color: #333333;
+            --border-color: #E0E0E0;
+            --hover-color: #F5F5F5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            width: 48px;
+            height: 48px;
+            margin-right: 12px;
+        }
+
+        h1 {
+            font-size: 20px;
+            color: var(--danger-color);
+        }
+
+        .warning-box {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 25px;
+            border-top: 5px solid var(--danger-color);
+            margin-bottom: 20px;
+        }
+
+        .warning-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .warning-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        .url-container {
+            background-color: #f8f8f8;
+            border-left: 4px solid var(--danger-color);
+            padding: 12px;
+            margin: 20px 0;
+            overflow-wrap: break-word;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .stats-container {
+            background-color: #fff8e1;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-item {
+            margin-bottom: 8px;
+            display: flex;
+        }
+
+        .stat-label {
+            font-weight: 500;
+            width: 180px;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            border: none;
+        }
+
+        .back-button {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 13px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="images/icon48.png" alt="PhishGuard Logo" class="logo">
+            <h1>PhishGuard - Dangerous Website Blocked</h1>
+        </div>
+
+        <div class="warning-box">
+            <div class="warning-title">
+                <span class="warning-icon">⚠️</span>
+                <h2>This website has been blocked for your protection</h2>
+            </div>
+
+            <p>PhishGuard has detected that this website is highly likely to be a phishing attempt designed to steal your personal information.</p>
+
+            <div class="url-container" id="blocked-url">
+                Loading URL...
+            </div>
+
+            <div class="stats-container">
+                <div class="stat-item">
+                    <span class="stat-label">Risk level:</span>
+                    <span id="risk-level">High</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Phishing probability:</span>
+                    <span id="probability">Loading...</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Detection method:</span>
+                    <span id="detection-method">Loading...</span>
+                </div>
+            </div>
+
+            <p>For your safety, navigation to this website has been blocked.</p>
+
+            <div class="button-container">
+                <button class="back-button" id="back-button">Go Back to Safety</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            Protected by PhishGuard - AI-powered phishing protection
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load the dangerous URL information
+            chrome.storage.local.get(['blocked_url', 'phishing_data'], function(data) {
+                if (data.blocked_url) {
+                    document.getElementById('blocked-url').textContent = data.blocked_url;
+                }
+
+                if (data.phishing_data) {
+                    const result = data.phishing_data;
+                    document.getElementById('probability').textContent =
+                        result.probability ? result.probability.toFixed(1) + '%' : 'Unknown';
+
+                    if (result.source === 'blacklist') {
+                        document.getElementById('detection-method').textContent = 'URL found in blocklist';
+                    } else {
+                        document.getElementById('detection-method').textContent =
+                            result.blend_method || 'Machine learning analysis';
+                    }
+
+                    // Set risk level text
+                    if (result.probability > 90 || result.source === 'blacklist') {
+                        document.getElementById('risk-level').textContent = 'Very High';
+                    } else if (result.probability > 80) {
+                        document.getElementById('risk-level').textContent = 'High';
+                    } else {
+                        document.getElementById('risk-level').textContent = 'Significant';
+                    }
+                }
+            });
+
+            // Set up back button
+            document.getElementById('back-button').addEventListener('click', function() {
+                window.history.back();
+            });
+        });
+    </script>
+</body>
+</html>
