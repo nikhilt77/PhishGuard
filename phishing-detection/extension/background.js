@@ -1,8 +1,7 @@
-// background.js (Manifest V3 service worker)
-
 let predictionCache = {};
 let blacklist = [];
 let whitelist = [];
+let pendingRedirects = {};
 
 // ===============================
 //  1) LOAD LISTS WHEN SERVICE WORKER STARTS
@@ -305,11 +304,113 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     predictionCache = {};
     sendResponse({ success: true });
     return true;
+  } else if (request.action === "proceedAnyway") {
+    // Handle user choosing to proceed to a warned site
+    const { url } = request;
+    if (!url) {
+      console.error("proceedAnyway called without a URL");
+      sendResponse({ success: false, error: "No URL provided" });
+      return true;
+    }
+
+    // Log the action
+    console.log(`User chose to proceed to warned site: ${url}`);
+
+    // Mark URL as whitelisted temporarily to avoid re-detection
+    predictionCache[url] = {
+      prediction: "Legitimate",
+      probability: 30,
+      source: "user_override",
+      note: "User chose to proceed despite warning",
+    };
+
+    // Multiple approaches to navigate:
+    try {
+      // Approach 1: Use sender tab if available
+      if (sender && sender.tab && sender.tab.id) {
+        chrome.tabs.update(sender.tab.id, { url: url });
+        sendResponse({ success: true });
+        return true;
+      }
+
+      // Approach 2: Query for active tab and update it
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        if (tabs && tabs.length > 0) {
+          chrome.tabs.update(tabs[0].id, { url: url });
+          sendResponse({ success: true });
+        } else {
+          // Approach 3: Create new tab as last resort
+          chrome.tabs.create({ url: url });
+          sendResponse({ success: true });
+        }
+      });
+    } catch (error) {
+      console.error("All navigation methods failed in proceedAnyway:", error);
+      sendResponse({ success: false, error: error.message });
+    }
+
+    return true;
+  } else if (request.action === "openPopup") {
+    // This action is sent from content.js when user clicks "Details" in the warning banner
+    // No need to do anything here as the popup is controlled by the browser
+    return false;
   }
 });
 
-// Whenever a tab is updated, check the new URL
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+// ===============================
+//  5) PRE-NAVIGATION PROTECTION
+// ===============================
+
+// Check URLs at the beginning of navigation and potentially redirect
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  // Pre-navigation check when loading starts
+  if (
+    changeInfo.status === "loading" &&
+    tab.url &&
+    tab.url.startsWith("http")
+  ) {
+    // Skip already pending redirects to avoid loops
+    if (pendingRedirects[tabId] === tab.url) {
+      return;
+    }
+
+    // Skip extension pages to avoid interfering with our own warning pages
+    if (tab.url.startsWith(chrome.runtime.getURL(""))) {
+      return;
+    }
+
+    console.log("Tab loading, checking URL:", tab.url);
+
+    try {
+      const result = await checkUrl(tab.url);
+      updateBadge(tabId, result);
+
+      // All phishing sites (including blacklisted and high-risk) show warning with proceed option
+      if (result.prediction === "Phishing" && result.probability >= 50) {
+        // Store URL details for warning page
+        chrome.storage.local.set({
+          warned_url: tab.url,
+          phishing_data: result,
+        });
+
+        // Redirect to warning page
+        const warningUrl = chrome.runtime.getURL("warning.html");
+        pendingRedirects[tabId] = warningUrl;
+        chrome.tabs.update(tabId, { url: warningUrl });
+
+        // Clean up after redirect
+        setTimeout(() => {
+          if (pendingRedirects[tabId] === warningUrl) {
+            delete pendingRedirects[tabId];
+          }
+        }, 2000);
+      }
+    } catch (error) {
+      console.error("Error during pre-navigation check:", error);
+    }
+  }
+
+  // Keep the existing post-load check for content scripts
   if (changeInfo.status === "complete" && tab.url) {
     if (tab.url.startsWith("http")) {
       chrome.tabs.sendMessage(tabId, { action: "pageLoaded" });
