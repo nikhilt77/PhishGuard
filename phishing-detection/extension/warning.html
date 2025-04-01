@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PhishGuard - Suspicious Website Warning</title>
+        <style>
+            :root {
+                --primary-color: #2196f3;
+                --danger-color: #ff3b30;
+                --success-color: #4caf50;
+                --warning-color: #ff9500;
+                --neutral-color: #9e9e9e;
+                --background-color: #ffffff;
+                --text-color: #333333;
+                --border-color: #e0e0e0;
+                --hover-color: #f5f5f5;
+            }
+
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                background-color: #f5f5f5;
+                color: var(--text-color);
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            }
+
+            .container {
+                max-width: 600px;
+                width: 100%;
+            }
+
+            .logo-container {
+                display: flex;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            .logo {
+                width: 48px;
+                height: 48px;
+                margin-right: 12px;
+            }
+
+            h1 {
+                font-size: 20px;
+                color: var(--warning-color);
+            }
+
+            .warning-box {
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                padding: 25px;
+                border-top: 5px solid var(--warning-color);
+                margin-bottom: 20px;
+            }
+
+            .warning-title {
+                display: flex;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            .warning-icon {
+                font-size: 24px;
+                margin-right: 10px;
+            }
+
+            .url-container {
+                background-color: #f8f8f8;
+                border-left: 4px solid var(--warning-color);
+                padding: 12px;
+                margin: 20px 0;
+                overflow-wrap: break-word;
+                font-family: monospace;
+                font-size: 14px;
+            }
+
+            .stats-container {
+                background-color: #fff8e1;
+                border-radius: 4px;
+                padding: 15px;
+                margin: 20px 0;
+            }
+
+            .stat-item {
+                margin-bottom: 8px;
+                display: flex;
+            }
+
+            .stat-label {
+                font-weight: 500;
+                width: 180px;
+            }
+
+            .button-container {
+                display: flex;
+                gap: 15px;
+                margin-top: 25px;
+                flex-wrap: wrap;
+            }
+
+            button {
+                padding: 10px 20px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-weight: 500;
+                border: none;
+            }
+
+            .back-button {
+                background-color: var(--success-color);
+                color: white;
+            }
+
+            .proceed-button {
+                background-color: white;
+                border: 1px solid var(--danger-color);
+                color: var(--danger-color);
+            }
+
+            .home-button {
+                background-color: var(--primary-color);
+                color: white;
+            }
+
+            .footer {
+                margin-top: 20px;
+                text-align: center;
+                font-size: 13px;
+                color: #777;
+            }
+
+            .direct-link-button {
+                display: inline-block;
+                padding: 10px 20px;
+                background-color: var(--danger-color);
+                color: white;
+                text-decoration: none;
+                border-radius: 4px;
+                font-weight: 500;
+                margin-top: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="logo-container">
+                <img
+                    src="images/icon48.png"
+                    alt="PhishGuard Logo"
+                    class="logo"
+                />
+                <h1>PhishGuard - Suspicious Website Warning</h1>
+            </div>
+
+            <div class="warning-box">
+                <div class="warning-title">
+                    <span class="warning-icon">⚠️</span>
+                    <h2>This website may be dangerous</h2>
+                </div>
+
+                <p>
+                    PhishGuard has detected that this website has
+                    characteristics commonly found in phishing sites that try to
+                    steal your personal information.
+                </p>
+
+                <div class="url-container" id="warned-url">Loading URL...</div>
+
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <span class="stat-label">Risk level:</span>
+                        <span id="risk-level">Medium</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Phishing probability:</span>
+                        <span id="probability">Loading...</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Detection method:</span>
+                        <span id="detection-method">Loading...</span>
+                    </div>
+                </div>
+
+                <p>
+                    We recommend you do not proceed to this website. It may
+                    attempt to steal your passwords or personal information.
+                </p>
+
+                <div class="button-container">
+                    <button class="back-button" id="back-button">
+                        Go Back to Safety
+                    </button>
+                    <button class="proceed-button" id="proceed-button">
+                        Proceed Anyway (Not Recommended)
+                    </button>
+                    <button class="home-button" id="home-button">
+                        Go to Google
+                    </button>
+                </div>
+
+                <div
+                    id="direct-navigation-container"
+                    style="
+                        display: none;
+                        margin-top: 20px;
+                        text-align: center;
+                        padding: 15px;
+                        background-color: #f8f8f8;
+                        border-radius: 5px;
+                    "
+                >
+                    <p
+                        style="
+                            margin-bottom: 10px;
+                            color: #d32f2f;
+                            font-weight: bold;
+                        "
+                    >
+                        If the "Proceed Anyway" button is not working, you can
+                        use this direct link:
+                    </p>
+                    <a
+                        id="direct-proceed-link"
+                        href="#"
+                        target="_self"
+                        class="direct-link-button"
+                    >
+                        Direct Proceed Link
+                    </a>
+                </div>
+
+                <div
+                    id="navigation-status"
+                    style="
+                        display: none;
+                        margin-top: 15px;
+                        text-align: center;
+                        padding: 10px;
+                        background-color: #f5f5f5;
+                        border-radius: 4px;
+                    "
+                >
+                    Attempting to navigate...
+                </div>
+            </div>
+
+            <div class="footer">
+                Protected by PhishGuard - AI-powered phishing protection
+            </div>
+        </div>
+
+        <script src="warning-script.js"></script>
+    </body>
+</html>
