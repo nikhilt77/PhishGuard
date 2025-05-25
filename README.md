@@ -2,7 +2,8 @@
 
 # PhishGuard
 
-PhishGuard is a user-friendly Chrome extension that detects phishing websites in real time by leveraging machine learning. Designed for seamless browsing security, PhishGuard analyzes URLs and alerts users to potential phishing threats before they can do harm.
+PhishGuard is a Phishing detection Chrome extension that detects phishing websites in real time by leveraging machine learning. Designed for seamless browsing security, PhishGuard analyzes URLs and alerts users to potential phishing threats before they can do harm.
+
 
 ## 🚀 Features
 
@@ -12,6 +13,15 @@ PhishGuard is a user-friendly Chrome extension that detects phishing websites in
 - **Customizable and Adaptive:** Continually improves by adapting to new phishing patterns.
 - **Seamless Integration:** Lightweight extension that fits right into your Chrome browser.
 - **Privacy-Focused:** Does not collect or transmit your personal browsing data.
+
+## Screenshots
+
+![Popup](Screenshots/PhishGuard-Popup.png)
+![Phishing Site](Screenshots/PhishGuard-Phishing-Site.png)
+![Non Phishing Site](Screenshots/PhishGuard-Not-Phishy-Site.png)
+![White List Analysis](Screenshots/PhishGuard-WhiteLists-Analysis.png)
+![White Lists](Screenshots/PhishGuard-WhiteLists.png)
+![Black Lists](Screenshots/PhishGuard-BlackLists.png)
 
 ## 🛠️ Technology Stack
 
@@ -23,7 +33,7 @@ PhishGuard is a user-friendly Chrome extension that detects phishing websites in
 
 ## 📦 Folder Structure
 
-
+```bash
 phishing-detection/
 ├── backend/                # Python (Flask) backend for ML predictions
 │   └── app.py
@@ -34,7 +44,7 @@ phishing-detection/
 │   ├── manifest.json
 ├── train_SVM.py            # Model training script
 ├── train_random_forest.py  # Alternative model training
-
+```
 
 ## 🖥️ Getting Started
 
@@ -47,33 +57,33 @@ phishing-detection/
 
 ### 1. Clone the Repository
 
-###bash
+```bash
 git clone https://github.com/nikhilt77/PhishGuard.git
 cd PhishGuard/phishing-detection
-
+```
 
 ### 2. Install Python Dependencies
 
 It's recommended to use a virtual environment:
 
-###bash
+```bash
 python -m venv venv
 source venv/bin/activate   # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
-
+```
 
 If `requirements.txt` does not exist, manually install:
 
-###bash
+```bash
 pip install flask scikit-learn pandas tldextract numpy scipy joblib
-
+```
 
 ### 3. Start the Backend Server
 
-###bash
+```bash
 cd backend
 python app.py
-
+```
 
 By default, the server will run at `http://localhost:5000`.
 
@@ -99,11 +109,11 @@ If you want to retrain the model:
 1. Download or update phishing and legitimate URL datasets.
 2. Run the training script:
 
-###bash
+```bash
 python train_SVM.py
-or
+#or
 python train_random_forest.py
-
+```
 
 3. The script will output model files which are loaded by the backend server (`app.py`).
 
