@@ -134,8 +134,4 @@ We welcome contributions! To get started:
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
----
 
-**Stay safe and happy browsing with PhishGuard!**
-
-```
