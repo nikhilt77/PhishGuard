@@ -18,7 +18,7 @@ PhishGuard is a Phishing detection Chrome extension that detects phishing websit
 
 ## The popup window
 ![Popup](Screenshots/PhishGuard-Popup.png)
-##Detecting a Phishing Site
+## Detecting a Phishing Site
 ![Phishing Site](Screenshots/PhishGuard-Phishing-Site.png)
 ## Analysis of a non Phishing Site
 ![Non Phishing Site](Screenshots/PhishGuard-Not-Phishy-Site.png)
